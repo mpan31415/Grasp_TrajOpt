@@ -1,4 +1,6 @@
 moveit_ws/build
 moveit_ws/devel
 moveit_ws/logs
+
 moveit_ws/.catkin_tools
+moveit_ws/src/.vscode
