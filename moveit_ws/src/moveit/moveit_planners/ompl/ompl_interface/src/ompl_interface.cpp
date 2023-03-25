@@ -108,16 +108,26 @@ ompl_interface::OMPLInterface::getPlanningContext(const planning_scene::Planning
                                                   const planning_interface::MotionPlanRequest& req,
                                                   moveit_msgs::MoveItErrorCodes& error_code) const
 {
+  std::cout << "\n========== (ompl_interface.cpp) OMPLInterface::getPlanningContext() -- START\n" << std::endl;
+
   ModelBasedPlanningContextPtr ctx =
       context_manager_.getPlanningContext(planning_scene, req, error_code, nh_, use_constraints_approximations_);
+
   if (ctx)
     configureContext(ctx);
+
+    std::cout << "\n========== (ompl_interface.cpp) OMPLInterface::getPlanningContext() -- FINISH\n" << std::endl;
+
   return ctx;
 }
 
 void ompl_interface::OMPLInterface::configureContext(const ModelBasedPlanningContextPtr& context) const
-{
+{ 
+  std::cout << "\n========== (ompl_interface.cpp) OMPLInterface::configureContext() -- START\n" << std::endl;
+
   context->simplifySolutions(simplify_solutions_);
+
+  std::cout << "\n========== (ompl_interface.cpp) OMPLInterface::configureContext() -- FINISH\n" << std::endl;
 }
 
 void ompl_interface::OMPLInterface::loadConstraintSamplers()
@@ -232,6 +242,8 @@ void ompl_interface::OMPLInterface::loadPlannerConfigurations()
 
     if (default_planner_id.empty())
     {
+      std::cout << "\n" << "The default planner id is empty!" << "\n" << std::endl;
+
       default_pc.group = group_name;
       default_pc.config = specific_group_params;
       default_pc.config["type"] = "geometric::RRTConnect";

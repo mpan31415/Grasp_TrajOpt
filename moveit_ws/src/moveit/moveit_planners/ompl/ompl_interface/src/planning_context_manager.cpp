@@ -412,7 +412,9 @@ ompl_interface::PlanningContextManager::getStateSpaceFactory(const std::string& 
 ompl_interface::ModelBasedPlanningContextPtr ompl_interface::PlanningContextManager::getPlanningContext(
     const planning_scene::PlanningSceneConstPtr& planning_scene, const moveit_msgs::MotionPlanRequest& req,
     moveit_msgs::MoveItErrorCodes& error_code, const ros::NodeHandle& nh, bool use_constraints_approximation) const
-{
+{ 
+  std::cout << "\n========== (planning_context_manager.cpp) PlanningContextManager::getPlanningContext() -- START\n" << std::endl;
+
   if (req.group_name.empty())
   {
     ROS_ERROR_NAMED(LOGNAME, "No group specified to plan for");
@@ -498,6 +500,8 @@ ompl_interface::ModelBasedPlanningContextPtr ompl_interface::PlanningContextMana
       context.reset();
     }
   }
+
+  std::cout << "\n========== (planning_context_manager.cpp) PlanningContextManager::getPlanningContext() -- FINISH\n" << std::endl;
 
   return context;
 }

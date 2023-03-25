@@ -47,8 +47,13 @@ bool callPlannerInterfaceSolve(const planning_interface::PlannerManager& planner
                                const planning_scene::PlanningSceneConstPtr& planning_scene,
                                const planning_interface::MotionPlanRequest& req,
                                planning_interface::MotionPlanResponse& res)
-{
+{ 
+  std::cout << "\n========== (planning_request_adapter.cpp) callPlannerInterfaceSolve() -- START\n" << std::endl;
+
   planning_interface::PlanningContextPtr context = planner.getPlanningContext(planning_scene, req, res.error_code_);
+
+  std::cout << "\n========== (planning_request_adapter.cpp) callPlannerInterfaceSolve() -- FINISH\n" << std::endl;
+
   if (context)
     return context->solve(res);
   else
@@ -59,12 +64,17 @@ bool callAdapter(const PlanningRequestAdapter& adapter, const PlanningRequestAda
                  const planning_scene::PlanningSceneConstPtr& planning_scene,
                  const planning_interface::MotionPlanRequest& req, planning_interface::MotionPlanResponse& res,
                  std::vector<std::size_t>& added_path_index)
-{
+{ 
+  std::cout << "\n========== (planning_request_adapter.cpp) CallAdapter() -- START : " << adapter.getDescription() << std::endl;
+
   try
   {
     bool result = adapter.adaptAndPlan(planner, planning_scene, req, res, added_path_index);
     ROS_DEBUG_STREAM_NAMED("planning_request_adapter", adapter.getDescription()
                                                            << ": " << moveit::core::MoveItErrorCode(res.error_code_));
+
+    std::cout << "\n========== (planning_request_adapter.cpp) CallAdapter() -- FINISH : " << adapter.getDescription() << std::endl;
+
     return result;
   }
   catch (std::exception& ex)
@@ -116,10 +126,14 @@ bool PlanningRequestAdapterChain::adaptAndPlan(const planning_interface::Planner
                                                const planning_interface::MotionPlanRequest& req,
                                                planning_interface::MotionPlanResponse& res,
                                                std::vector<std::size_t>& added_path_index) const
-{
+{ 
+  std::cout << "\n========== (planning_request_adapter.cpp) PlanningRequestAdapterChain::adaptAndPlan() -- START\n" << std::endl;
+
   // if there are no adapters, run the planner directly
   if (adapters_.empty())
-  {
+  { 
+    std::cout << "\n (planning_request_adapter.cpp) There are no adapters, running the planner directly!\n" << std::endl;
+
     added_path_index.clear();
     return callPlannerInterfaceSolve(*planner, planning_scene, req, res);
   }
@@ -159,6 +173,9 @@ bool PlanningRequestAdapterChain::adaptAndPlan(const planning_interface::Planner
         added_path_index.push_back(added_index);
       }
     std::sort(added_path_index.begin(), added_path_index.end());
+
+    std::cout << "\n========== (planning_request_adapter.cpp) PlanningRequestAdapterChain::adaptAndPlan() -- FINISH\n" << std::endl;
+
     return result;
   }
 }

@@ -105,7 +105,9 @@ ompl_interface::ModelBasedPlanningContext::ModelBasedPlanningContext(const std::
 }
 
 void ompl_interface::ModelBasedPlanningContext::configure(const ros::NodeHandle& nh, bool use_constraints_approximations)
-{
+{ 
+  std::cout << "\n (model_based_planning_context.cpp) ========== ModelBasedPlanningContext::configure() -- START\n" << std::endl;
+
   loadConstraintApproximations(nh);
   if (!use_constraints_approximations)
   {
@@ -136,6 +138,8 @@ void ompl_interface::ModelBasedPlanningContext::configure(const ros::NodeHandle&
   useConfig();
   if (ompl_simple_setup_->getGoal())
     ompl_simple_setup_->setup();
+  
+  std::cout << "\n (model_based_planning_context.cpp) ========== ModelBasedPlanningContext::configure() -- FINISH\n" << std::endl;
 }
 
 void ompl_interface::ModelBasedPlanningContext::setProjectionEvaluator(const std::string& peval)
@@ -254,7 +258,9 @@ ompl_interface::ModelBasedPlanningContext::allocPathConstrainedSampler(const omp
 }
 
 void ompl_interface::ModelBasedPlanningContext::useConfig()
-{
+{ 
+  std::cout << "\n(model_based_planning_context.cpp) ========== ModelBasedPlanningContext::useConfig() -- START\n" << std::endl;
+
   const std::map<std::string, std::string>& config = spec_.config_;
   if (config.empty())
     return;
@@ -383,6 +389,8 @@ void ompl_interface::ModelBasedPlanningContext::useConfig()
   ompl_simple_setup_->getSpaceInformation()->params().setParams(cfg, true);
   // call setup() again for possibly new param values
   ompl_simple_setup_->getSpaceInformation()->setup();
+
+  std::cout << "\n(model_based_planning_context.cpp) ========== ModelBasedPlanningContext::useConfig() -- FINISH\n" << std::endl;
 }
 
 void ompl_interface::ModelBasedPlanningContext::setPlanningVolume(const moveit_msgs::WorkspaceParameters& wparams)
