@@ -1,0 +1,2 @@
+moveit/moveit_ros/moveit_ros
+/home/hrigroup/MonashRA/moveit_ws/devel/.private/moveit_ros/cmake.lock /home/hrigroup/MonashRA/moveit_ws/devel/./cmake.lock
