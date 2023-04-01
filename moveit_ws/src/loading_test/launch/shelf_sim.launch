@@ -14,7 +14,7 @@
     <arg name="paused" value="true"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="headless" value="$(arg headless)"/>
-    <arg name="world_name" value="$(find loading_test)/world/real_shelf.sdf"/>
+    <arg name="world_name" value="$(find loading_test)/world/my_world.sdf"/>
   </include>
 
   <!-- Oh, you wanted a robot? -->
