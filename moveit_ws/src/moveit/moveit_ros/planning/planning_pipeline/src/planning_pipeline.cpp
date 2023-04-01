@@ -220,7 +220,7 @@ bool planning_pipeline::PlanningPipeline::generatePlan(const planning_scene::Pla
                                                        planning_interface::MotionPlanResponse& res,
                                                        std::vector<std::size_t>& adapter_added_state_index) const
 { 
-  std::cout << "\n (planning_pipeline.cpp) ========== PlanningPipeline::generatePlan() -- START\n" << std::endl;
+  //std::cout << "\n (planning_pipeline.cpp) ========== PlanningPipeline::generatePlan() -- START\n" << std::endl;
 
   // Set planning pipeline active
   active_ = true;
@@ -238,14 +238,14 @@ bool planning_pipeline::PlanningPipeline::generatePlan(const planning_scene::Pla
     return false;
   }
 
-  std::cout << "\n(planning_pipeline.cpp) ============================== line breaker 111 ==============================\n" << std::endl;
+  //std::cout << "\n(planning_pipeline.cpp) ============================== line breaker 111 ==============================\n" << std::endl;
 
   bool solved = false;
   try
   {
     if (adapter_chain_)
     { 
-      std::cout << "\n(planning_pipeline.cpp) ============================== line breaker 222 ==============================\n" << std::endl;
+      //std::cout << "\n(planning_pipeline.cpp) ============================== line breaker 222 ==============================\n" << std::endl;
 
       solved = adapter_chain_->adaptAndPlan(planner_instance_, planning_scene, req, res, adapter_added_state_index);
       if (!adapter_added_state_index.empty())
@@ -272,7 +272,7 @@ bool planning_pipeline::PlanningPipeline::generatePlan(const planning_scene::Pla
   }
   bool valid = true;
 
-  std::cout << "\n(planning_pipeline.cpp) ============================== line breaker 333 ==============================\n" << std::endl;
+  //std::cout << "\n(planning_pipeline.cpp) ============================== line breaker 333 ==============================\n" << std::endl;
 
   if (solved && res.trajectory_)
   {
@@ -388,7 +388,7 @@ bool planning_pipeline::PlanningPipeline::generatePlan(const planning_scene::Pla
   // Set planning pipeline to inactive
   active_ = false;
 
-  std::cout << "\n(planning_pipeline.cpp) ========== PlanningPipeline::generatePlan() -- FINISH\n" << std::endl;
+  //std::cout << "\n(planning_pipeline.cpp) ========== PlanningPipeline::generatePlan() -- FINISH\n" << std::endl;
 
   return solved && valid;
 }

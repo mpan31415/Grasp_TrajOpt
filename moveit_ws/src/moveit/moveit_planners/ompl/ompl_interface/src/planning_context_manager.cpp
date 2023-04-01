@@ -413,7 +413,7 @@ ompl_interface::ModelBasedPlanningContextPtr ompl_interface::PlanningContextMana
     const planning_scene::PlanningSceneConstPtr& planning_scene, const moveit_msgs::MotionPlanRequest& req,
     moveit_msgs::MoveItErrorCodes& error_code, const ros::NodeHandle& nh, bool use_constraints_approximation) const
 { 
-  std::cout << "\n========== (planning_context_manager.cpp) PlanningContextManager::getPlanningContext() -- START\n" << std::endl;
+  //std::cout << "\n========== (planning_context_manager.cpp) PlanningContextManager::getPlanningContext() -- START\n" << std::endl;
 
   if (req.group_name.empty())
   {
@@ -501,7 +501,7 @@ ompl_interface::ModelBasedPlanningContextPtr ompl_interface::PlanningContextMana
     }
   }
 
-  std::cout << "\n========== (planning_context_manager.cpp) PlanningContextManager::getPlanningContext() -- FINISH\n" << std::endl;
+  //std::cout << "\n========== (planning_context_manager.cpp) PlanningContextManager::getPlanningContext() -- FINISH\n" << std::endl;
 
   return context;
 }

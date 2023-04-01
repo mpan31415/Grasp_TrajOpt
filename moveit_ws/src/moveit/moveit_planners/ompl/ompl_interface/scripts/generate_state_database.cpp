@@ -117,7 +117,7 @@ struct GenerateStateDatabaseParameters
 
 void computeDB(const planning_scene::PlanningScenePtr& scene, struct GenerateStateDatabaseParameters& params)
 {
-  std::cout << "\n========== generate_state_database.cpp / computeDB() -- START\n" << std::endl;
+  //std::cout << "\n========== generate_state_database.cpp / computeDB() -- START\n" << std::endl;
 
   // required by addConstraintApproximation
   scene->getCurrentStateNonConst().update();
@@ -150,7 +150,7 @@ void computeDB(const planning_scene::PlanningScenePtr& scene, struct GenerateSta
                             << params.constraints);
   ROS_INFO_STREAM_NAMED(LOGNAME, "The database has been saved in your local folder '" << params.output_folder << "'");
 
-  std::cout << "\n========== generate_state_database.cpp / computeDB() -- START\n" << std::endl;
+  //std::cout << "\n========== generate_state_database.cpp / computeDB() -- START\n" << std::endl;
 }
 
 /**

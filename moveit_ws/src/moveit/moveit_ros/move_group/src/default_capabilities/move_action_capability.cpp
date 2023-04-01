@@ -150,7 +150,7 @@ void MoveGroupMoveAction::executeMoveCallbackPlanAndExecute(const moveit_msgs::M
 void MoveGroupMoveAction::executeMoveCallbackPlanOnly(const moveit_msgs::MoveGroupGoalConstPtr& goal,
                                                       moveit_msgs::MoveGroupResult& action_res)
 { 
-  std::cout << "\n========== (move_action_capability.cpp) MoveGroupMoveAction::executeMoveCallbackPlanOnly() -- START\n" << std::endl;
+  //std::cout << "\n========== (move_action_capability.cpp) MoveGroupMoveAction::executeMoveCallbackPlanOnly() -- START\n" << std::endl;
 
   ROS_INFO_NAMED(getName(), "Planning request received for MoveGroup action. Forwarding to planning pipeline.");
 
@@ -191,7 +191,7 @@ void MoveGroupMoveAction::executeMoveCallbackPlanOnly(const moveit_msgs::MoveGro
   action_res.error_code = res.error_code_;
   action_res.planning_time = res.planning_time_;
 
-  std::cout << "\n========== (move_action_capability.cpp) MoveGroupMoveAction::executeMoveCallbackPlanOnly() -- FINISH\n" << std::endl;
+  //std::cout << "\n========== (move_action_capability.cpp) MoveGroupMoveAction::executeMoveCallbackPlanOnly() -- FINISH\n" << std::endl;
 }
 
 bool MoveGroupMoveAction::planUsingPlanningPipeline(const planning_interface::MotionPlanRequest& req,

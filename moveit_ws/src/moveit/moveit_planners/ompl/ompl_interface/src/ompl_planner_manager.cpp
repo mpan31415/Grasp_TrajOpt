@@ -106,7 +106,7 @@ public:
 
   bool initialize(const moveit::core::RobotModelConstPtr& model, const std::string& ns) override
   {
-    std::cout << "\nInside the initialize function now!\n" << std::endl;
+    //std::cout << "\nInside the initialize function now!\n" << std::endl;
     
     if (!ns.empty())
       nh_ = ros::NodeHandle(ns);
