@@ -25,7 +25,7 @@ from moveit_msgs.msg import (
 )
 
 # planner_id = "RRTstarkConfigDefault"
-planner_id = "RRTStar"
+# planner_id = "RRTStar"
 
 init_poses = [
     [0.6159923192225398, -0.9346678162103055, 0.4857694749341781, -1.4172700629835018, 1.7821330230280088, 1.678379277996719, -2.949236071566051],
@@ -100,11 +100,45 @@ def arm_tuck(index):
     move_group.stop()
 
 
-def control():
+
+
+
+def plan_to_traj(plan, printing = False):
+
+    joint_trajectory = None
+
+    if plan[0] == True:
+
+        rospy.loginfo("Extracting trajectory from Moveit plan result !")
+
+        moveit_traj = plan[1]
+        joint_trajectory = moveit_traj.joint_trajectory
+        waypoints = joint_trajectory.points
+        num_waypoints = len(waypoints)
+
+        if printing:
+            print("The number of waypoints generated is %d" % num_waypoints)
+
+        if printing:
+            for i in range(num_waypoints):
+                if i % 10 == 0 or i == num_waypoints-1:
+                    print("The %d-th trajectory joint-space waypoint is %s \n" % (i, list(waypoints[i].positions)))
+
+    else:
+        rospy.logerr("Trajectory not found :(")
+
+
+    return joint_trajectory
+
+
+
+
+
+def plan_arm():
 
     # initialize moveit_commander and a rospy node
     # moveit_commander.roscpp_initialize(sys.argv)
-    rospy.init_node('move_arm_test', anonymous=True)
+    rospy.init_node('plan_arm_node', anonymous=True)
 
     # instantiate a RobotCommander object
     # robot = moveit_commander.RobotCommander()
@@ -147,7 +181,7 @@ def control():
     pose_goal.orientation.w = 1.0
     pose_goal.orientation.x = -1.0
     pose_goal.position.x = 0.65
-    pose_goal.position.y = 0.0
+    pose_goal.position.y = 0.4
     pose_goal.position.z = 0.9
 
     move_group.set_pose_target(pose_goal)
@@ -164,46 +198,8 @@ def control():
     plan = move_group.plan()
     # move_group.clear_pose_targets()
 
-    # print("The plan has type %s yeah!" % type(plan))
-    joint_trajectory = None
-
-    if plan[0] == True:
-        
-        print("Trajectory is successfully found!")
-        joint_trajectory = plan[1]
-        # print("The joint trajectory has type %s yeah!" % type(joint_trajectory))
-        
-        waypoints = joint_trajectory.points
-
-        # print("The header (%s) has type %s yeah!" % (header, type(header)))
-        # print("The joint names are %s yeah!" % joint_names)
-        num_waypoints = len(waypoints)
-        print("The number of waypoints generated is %d" % num_waypoints)
-
-        length = 0.0
-        for i in range(0, num_waypoints - 1):
-            # print("Currently prev is at the %d-th out of %d waypoints total\n" % (i+1, num_waypoints))
-            length += diff(waypoints[i], waypoints[i+1])
-        
-        print("The total length of the trajectory is %.3f radians!" % length)
-
-
-        # for i in range(len(waypoints)):
-        #     print("The %d-th trajectory joint-space waypoint is %s \n" % (i, list(waypoints[i].positions)))
-        
-        # final_point = waypoints[len(waypoints)-1]
-        # print("I think the final joint-space point is %s yeah!" % final_point)
-
-        # final_positions = final_point.positions
-        # time = final_point.time_from_start.secs
-
-        # print(final_positions)
-        # print("final positions tuple has type %s " % type(final_positions))
-        # print("The execution of the path took %d seconds" % time)
-
-    else:
-        print("Trajectory not found :(")
-
+    joint_traj = plan_to_traj(plan)
+    # print("The joint trajectory has type %s\n" % type(joint_traj))
 
     # move_group.set_joint_value_target(final_positions)
 
@@ -219,6 +215,7 @@ def control():
 if __name__== "__main__":
 
     try:
-        control()
+        plan_arm()
+        
     except rospy.ROSInterruptException:
         pass
