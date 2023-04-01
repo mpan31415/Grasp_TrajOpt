@@ -11,6 +11,7 @@ import math
 import rospy
 import moveit_commander
 import moveit_msgs.msg
+import actionlib
 import geometry_msgs.msg
 from math import pi
 from std_msgs.msg import String, Header
@@ -24,8 +25,16 @@ from moveit_msgs.msg import (
     RobotState
 )
 
+from control_msgs.msg import (FollowJointTrajectoryAction,
+                              FollowJointTrajectoryGoal,
+                              GripperCommandAction,
+                              GripperCommandGoal)
+
+
+
 # planner_id = "RRTstarkConfigDefault"
 # planner_id = "RRTStar"
+MAX_EFFORT = 100
 
 init_poses = [
     [0.6159923192225398, -0.9346678162103055, 0.4857694749341781, -1.4172700629835018, 1.7821330230280088, 1.678379277996719, -2.949236071566051],
@@ -99,6 +108,23 @@ def arm_tuck(index):
 
     move_group.stop()
 
+
+
+################################ CLOSE / OPEN GRIPPERS ###############################
+def move_hand(type):
+
+    client = actionlib.SimpleActionClient('/gripper_controller/gripper_action', GripperCommandAction)
+    client.wait_for_server()
+
+    # define goal
+    goal = GripperCommandGoal()
+    goal.command.position = type
+    goal.command.max_effort = MAX_EFFORT
+
+    # send goal to action server and wait for feedback
+    print("Moving gripper ... ")
+    client.send_goal(goal)
+    client.wait_for_result(rospy.Duration.from_sec(10.0))
 
 
 

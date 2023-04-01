@@ -65,14 +65,10 @@ CLOSED = 0
 OPEN = 0.1
 MAX_EFFORT = 100 # seems to be percentage
 
-
-
-
-
 ##################### OBJECT SIZES AND OTHER CONSTANTS ###################
 RADIUS = 0.03
 HEIGHT = 0.1
-OFFSET = HEIGHT + 0.01
+OFFSET = HEIGHT / 2
 
 # the following are in cm
 OBJ_WIDTH = RADIUS * 2 * 100
@@ -82,7 +78,6 @@ S_LOW = 0.3 - 0.03*(OBJ_HEIGHT - 6)
 S_HIGH = 0.7 + 0.03*(OBJ_WIDTH - 6)
 THETA_LOW = 0
 THETA_HIGH = 1.2    # (in radians)
-
 
 VEL_COEFF = 1
 CONST_X = -0.18
@@ -170,11 +165,15 @@ def get_diff(prev, next):
     return (sum, diff_list)
 
 
+
 def get_costs(trajectory, printing=False):
+        
         if printing:
+            
             print("=" * 100)
             print("Calculating trajectory length by doing a summation across differences in position between adjacent waypoints!")
             print("=" * 100)
+
         if trajectory is not None:
             # print("Found trajectory!")
             points = trajectory.points
@@ -231,6 +230,24 @@ def get_costs(trajectory, printing=False):
             return (length, vel_cost, accel_cost, jerk_cost, total_cost)
         else:
             print("The input trajectory is empty!")
+
+
+
+################################ CLOSE / OPEN GRIPPERS ###############################
+def move_hand(type):
+
+    client = actionlib.SimpleActionClient('/gripper_controller/gripper_action', GripperCommandAction)
+    client.wait_for_server()
+
+    # define goal
+    goal = GripperCommandGoal()
+    goal.command.position = type
+    goal.command.max_effort = MAX_EFFORT
+
+    # send goal to action server and wait for feedback
+    print("Moving gripper ... ")
+    client.send_goal(goal)
+    client.wait_for_result(rospy.Duration.from_sec(10.0))
 
 
 
@@ -406,23 +423,21 @@ class GazeboPlanner:
         rospy.loginfo("Running RRTConnect to plan trajectory towards object %d ... " % obj_choice)
         rospy.loginfo("=" * 100)
 
-        move_group = moveit_commander.MoveGroupCommander("arm")        
+        move_group = moveit_commander.MoveGroupCommander("arm")
         move_group.set_max_velocity_scaling_factor(self.vel_factor)
         move_group.set_planning_time(self.planning_time)
 
         ################### SET START STATE OF ROBOT ###################
         joint_start_state = JointState()
-        joint_start_state.name = ['shoulder_pan_joint', 'shoulder_lift_joint', 'upperarm_roll_joint', 'elbow_flex_joint', 'forearm_roll_joint', 'wrist_flex_joint', 'wrist_roll_joint']
-        joint_start_state.position = INIT_POSE_LIST
+        joint_start_state.name = ['shoulder_pan_joint', 'shoulder_lift_joint', 'upperarm_roll_joint', 'elbow_flex_joint', 
+                                  'forearm_roll_joint', 'wrist_flex_joint', 'wrist_roll_joint', 'l_gripper_finger_joint', 'r_gripper_finger_joint']
+        joint_start_state.position = INIT_POSE_LIST + [OPEN/2, OPEN/2]
         robot_start_state = RobotState()
         robot_start_state.joint_state = joint_start_state
         move_group.set_start_state(robot_start_state)
 
-        #################### PLAN TOWARDS ARM TUCK POSE ####################
-        # arm_tuck_pose = [1.32, 1.40, -0.2, 1.72, 0.0, 1.66, 0.0]
-        # plan = move_group.plan(arm_tuck_pose)
 
-        #################### PLAN TOWARDS BEER3 POSE ####################
+        #################### PLAN TOWARDS THE CHOSEN BEER POSE ####################
         rospy.loginfo("incoming request: beer object %d's pose: " % obj_choice)
         if obj_choice == 1:
             # print(self.beer1_pose)
@@ -436,7 +451,7 @@ class GazeboPlanner:
 
 
         self.grasp_pose.position.x += CONST_X
-        self.grasp_pose.position.z += OFFSET
+        # self.grasp_pose.position.z += (OFFSET / 2)
         # self.grasp_pose.position.z += dz
 
         # dx_for_fetch = dx * math.cos(yaw)
@@ -458,10 +473,12 @@ class GazeboPlanner:
 
         plan = move_group.plan(self.grasp_pose)
 
+        moveit_traj = plan[1]
+        joint_trajectory = moveit_traj.joint_trajectory
+
         choice = input("RRTConnect has finished! Would you like to calculate the trajectory length [1 for YES / 0 for NO]: ")
         # choice = 0
         if int(choice) == 1:
-            joint_trajectory = plan.joint_trajectory
             (length, vel_cost, accel_cost, jerk_cost, total_cost) = get_costs(joint_trajectory)
             print("+" * 100)
             print("The total cost of the trajectory is %.3f as calculated by the get_costs() function" % total_cost)

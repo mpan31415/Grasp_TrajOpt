@@ -258,7 +258,7 @@
     </model>
     <model name='beer1'>
       <link name='link'>
-        <pose frame=''>0 0 0.115 0 -0 0</pose>
+        <pose frame=''>0 0 0.05 0 -0 0</pose>
         <inertial>
           <mass>0.39</mass>
           <inertia>
@@ -314,7 +314,7 @@
     </model>
     <model name='beer2'>
       <link name='link'>
-        <pose frame=''>0 0 0.115 0 -0 0</pose>
+        <pose frame=''>0 0 0.05 0 -0 0</pose>
         <inertial>
           <mass>0.39</mass>
           <inertia>
@@ -370,7 +370,7 @@
     </model>
     <model name='beer3'>
       <link name='link'>
-        <pose frame=''>0 0 0.115 0 -0 0</pose>
+        <pose frame=''>0 0 0.05 0 -0 0</pose>
         <inertial>
           <mass>0.39</mass>
           <inertia>
