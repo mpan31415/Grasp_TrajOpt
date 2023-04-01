@@ -1,0 +1,6 @@
+devel_space: /home/hrigroup/MonashRA/trajopt_ws/devel
+install: false
+install_space: /home/hrigroup/MonashRA/trajopt_ws/install
+profile: default
+source_space: /home/hrigroup/MonashRA/trajopt_ws/src
+workspace: /home/hrigroup/MonashRA/trajopt_ws

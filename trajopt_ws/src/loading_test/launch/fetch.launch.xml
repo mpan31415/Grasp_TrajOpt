@@ -1,0 +1,68 @@
+<launch>
+
+  <arg name="x" default="0.0" />
+  <arg name="y" default="3.0" />
+  <arg name="z" default="0.0" />
+  <arg name="yaw" default="0.0" />
+
+  <!-- <arg name="shoulder_pan" default="1.32" />
+  <arg name="shoulder_lift" default="1.40" />
+  <arg name="upperarm_roll" default="-0.2" />
+  <arg name="elbow_flex" default="1.72" />
+  <arg name="forearm_roll" default="0.0" />
+  <arg name="wrist_flex" default="1.66" />
+  <arg name="wrist_roll" default="0.0" /> -->
+
+  <arg name="shoulder_pan" default="0.5" />
+  <arg name="shoulder_lift" default="1" />
+  <arg name="upperarm_roll" default="-1" />
+  <arg name="elbow_flex" default="2" />
+  <arg name="forearm_roll" default="-0.6" />
+  <arg name="wrist_flex" default="1.4" />
+  <arg name="wrist_roll" default="0.0" />
+
+  <!-- Setup controllers -->
+  <rosparam file="$(find fetch_gazebo)/config/default_controllers.yaml" command="load" />
+
+  <!-- URDF and TF support -->
+  <param name="robot_description" command="$(find xacro)/xacro.py $(find fetch_gazebo)/robots/fetch.gazebo.xacro" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" >
+    <param name="publish_frequency" value="100.0"/>
+  </node>
+
+  <!-- Put a robot in gazebo, make it look pretty -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf 
+        -x $(arg x) 
+        -y $(arg y) 
+        -z $(arg z) 
+        -Y $(arg yaw) 
+        -J shoulder_pan_joint $(arg shoulder_pan)
+        -J shoulder_lift_joint $(arg shoulder_lift)
+        -J upperarm_roll_joint $(arg upperarm_roll)
+        -J elbow_flex_joint $(arg elbow_flex)
+        -J forearm_roll_joint $(arg forearm_roll)
+        -J wrist_flex_joint $(arg wrist_flex)
+        -J wrist_roll_joint $(arg wrist_roll)
+        -model fetch 
+        -param robot_description"/>
+  <node name="prepare_robot" pkg="fetch_gazebo" type="prepare_simulated_robot.py" />
+
+  <!-- Give this robot a serial number and version -->
+  <param name="robot/serial" value="ABCDEFGHIJKLMNOPQRSTUVWX" />
+  <param name="robot/version" value="0.0.1" />
+
+  <!-- Head Camera Pipeline -->
+  <include file="$(find fetch_gazebo)/launch/include/head_camera.launch.xml" />
+
+  <!-- Publish base_scan_raw if anything subscribes to it -->
+  <node name="publish_base_scan_raw" pkg="topic_tools" type="relay" args="base_scan base_scan_raw" >
+    <param name="lazy" type="bool" value="True"/>
+  </node>
+
+  <!-- Start a mux between application and teleop -->
+  <node pkg="topic_tools" type="mux" name="cmd_vel_mux" respawn="true" args="base_controller/command /cmd_vel /teleop/cmd_vel">
+    <remap from="mux" to="cmd_vel_mux" />
+  </node>
+
+</launch>

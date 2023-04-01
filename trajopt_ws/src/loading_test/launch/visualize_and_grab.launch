@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="loading_test" name="visualize_and_grab" type="visualize_and_grab.py" output="screen" />
+</launch>

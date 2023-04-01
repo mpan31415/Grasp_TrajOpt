@@ -1,0 +1,9 @@
+<launch>
+
+  <include file="$(find loading_test)/launch/fetch_indiv.launch" />
+  <include file="$(find myfetch_moveit_config)/launch/move_group.launch" />
+
+  <node pkg="loading_test" name="const_br" type="const_br.py" output="screen" />
+  <node pkg="loading_test" name="visualize_and_grab" type="visualize_and_grab.py" output="screen" />
+
+</launch>

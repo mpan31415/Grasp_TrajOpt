@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/hrigroup/MonashRA/trajopt_ws/devel/.private/loading_test/setup.sh

@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="loading_test" name="loading_test_get_scene_node" type="loading_test_get_scene_node" output="screen" />
+</launch>

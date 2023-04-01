@@ -1,0 +1,17 @@
+Symlinking /home/hrigroup/MonashRA/trajopt_ws/devel/share/loading_test/cmake/loading_testConfig.cmake
+Symlinking /home/hrigroup/MonashRA/trajopt_ws/devel/share/loading_test/cmake/loading_testConfig-version.cmake
+Symlinking /home/hrigroup/MonashRA/trajopt_ws/devel/lib/pkgconfig/loading_test.pc
+Symlinking /home/hrigroup/MonashRA/trajopt_ws/devel/lib/loading_test/loading_test_get_scene_node
+Cleaning: (/home/joel/SRPTrajOpt/trajopt_ws/devel/.private/loading_test/cmake.lock, /home/joel/SRPTrajOpt/trajopt_ws/devel/./cmake.lock)
+Cleaning: (/home/joel/SRPTrajOpt/trajopt_ws/devel/.private/loading_test/share/loading_test/cmake/loading_testConfig.cmake, /home/joel/SRPTrajOpt/trajopt_ws/devel/share/loading_test/cmake/loading_testConfig.cmake)
+Cleaning: (/home/joel/SRPTrajOpt/trajopt_ws/devel/.private/loading_test/share/loading_test/cmake/loading_testConfig-version.cmake, /home/joel/SRPTrajOpt/trajopt_ws/devel/share/loading_test/cmake/loading_testConfig-version.cmake)
+Cleaning: (/home/joel/SRPTrajOpt/trajopt_ws/devel/.private/loading_test/lib/pkgconfig/loading_test.pc, /home/joel/SRPTrajOpt/trajopt_ws/devel/lib/pkgconfig/loading_test.pc)
+Cleaning: (/home/joel/SRPTrajOpt/trajopt_ws/devel/.private/loading_test/lib/loading_test/loading_test_get_scene_node, /home/joel/SRPTrajOpt/trajopt_ws/devel/lib/loading_test/loading_test_get_scene_node)
+Unlinking: /home/joel/SRPTrajOpt/trajopt_ws/devel/share/loading_test/cmake/loading_testConfig.cmake
+Already unlinked: {}
+Unlinking: /home/joel/SRPTrajOpt/trajopt_ws/devel/share/loading_test/cmake/loading_testConfig-version.cmake
+Already unlinked: {}
+Unlinking: /home/joel/SRPTrajOpt/trajopt_ws/devel/lib/pkgconfig/loading_test.pc
+Already unlinked: {}
+Unlinking: /home/joel/SRPTrajOpt/trajopt_ws/devel/lib/loading_test/loading_test_get_scene_node
+Already unlinked: {}
