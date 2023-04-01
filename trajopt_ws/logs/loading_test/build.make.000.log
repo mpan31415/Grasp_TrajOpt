@@ -1,4 +1,0 @@
-[35m[1mScanning dependencies of target loading_test_get_scene_node[0m
-[ 50%] [32mBuilding CXX object CMakeFiles/loading_test_get_scene_node.dir/src/get_scene.cpp.o[0m
-[100%] [32m[1mLinking CXX executable /home/hrigroup/MonashRA/trajopt_ws/devel/.private/loading_test/lib/loading_test/loading_test_get_scene_node[0m
-[100%] Built target loading_test_get_scene_node

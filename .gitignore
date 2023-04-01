@@ -5,3 +5,7 @@ moveit_ws/logs
 moveit_ws/.catkin_tools
 moveit_ws/src/.vscode
 moveit_ws/.catkin_tools
+
+trajopt_ws/build
+trajopt_ws/devel
+trajopt_ws/logs

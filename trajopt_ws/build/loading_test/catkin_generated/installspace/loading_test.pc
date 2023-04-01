@@ -1,8 +1,0 @@
-prefix=/home/hrigroup/MonashRA/trajopt_ws/install
-
-Name: loading_test
-Description: Description of loading_test
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
