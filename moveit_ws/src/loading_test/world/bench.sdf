@@ -91,16 +91,6 @@
       <wall_time>1670465101 981348545</wall_time>
       <iterations>173836</iterations>
       <model name='beer1'>
-        <pose relative_to="link_1">0.4 0.25 0.9 0 0 0</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose relative_to="link_1">0.4 0.25 0.9 0 0 0</pose>
-          <velocity>0 0 0 0 0 0</velocity>
-          <acceleration>0 0 -9.8 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='beer2'>
         <pose relative_to="link_1">0.7 0.25 0.9 0 0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -110,11 +100,21 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='beer3'>
-        <pose frame=''>0.55 0.25 0.9 0 0 0</pose>
+      <model name='beer2'>
+        <pose relative_to="link_1">0.55 0.25 0.9 0 0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>0.55 0.25 0.9 0 0 0</pose>
+          <pose relative_to="link_1">0.55 0.25 0.9 0 0 0</pose>
+          <velocity>0 0 0 0 0 0</velocity>
+          <acceleration>0 0 -9.8 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='beer3'>
+        <pose frame=''>0.4 0.25 0.9 0 0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>0.4 0.25 0.9 0 0 0</pose>
           <velocity>0 0 0 0 0 0</velocity>
           <acceleration>0 0 -9.8 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>

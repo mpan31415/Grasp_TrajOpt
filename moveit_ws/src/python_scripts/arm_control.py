@@ -216,6 +216,6 @@ if __name__== "__main__":
 
     try:
         plan_arm()
-        
+
     except rospy.ROSInterruptException:
         pass
