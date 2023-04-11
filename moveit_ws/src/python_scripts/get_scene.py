@@ -25,6 +25,11 @@ from control_msgs.msg import (FollowJointTrajectoryAction,
                               GripperCommandGoal)
 
 from shape_msgs.msg import SolidPrimitive
+from std_msgs.msg import String
+
+from michael_msgs.msg import _OmplRequest, _OmplResponse
+from michael_msgs.srv import _GetOmplResults
+
 import moveit_commander
 
 from moveit_msgs.msg import RobotState, CollisionObject
@@ -414,16 +419,24 @@ class GazeboPlanner:
             # self.plan(int(object_choice), dx, dz, theta, yaw)
             # plan(int(object_choice), 0.02, 0.07, 0, 0)
 
-            for index in range(1, 4):
+            for index in range(2, 4):
                 self.plan(int(index), dx, dz, theta, yaw)
 
-            wait = input("1 to continue, 0 to exit ")
+            wait = input("1 to publish trajectories to topic, 0 to exit ")
             if wait == 1:
-                for key in self.trajectories:
-                    info = self.trajectories[key]
-                    print("object %d: cost of trajectory is %.3f!\n" % (key, info[1]))
-                
-            rospy.signal_shutdown("hello")
+                trajectory_pub = rospy.Publisher('rrt_trajectories', String, queue_size=10)
+                rate = rospy.Rate(1) # 1 Hz
+                while not rospy.is_shutdown():
+                    for key in self.trajectories:
+                        info = self.trajectories[key]
+                        info_string = "object %d: cost of trajectory is %.3f!\n" % (key, info[1])
+                        rospy.loginfo("info string = %s" % info_string)
+                        trajectory_pub.publish(info_string)
+                        rate.sleep()
+                    rospy.signal_shutdown("goodbye")
+            else:
+                print("not publishing trajectories, shutting down now ... ")
+                rospy.signal_shutdown("goodbye")
 
 
 
