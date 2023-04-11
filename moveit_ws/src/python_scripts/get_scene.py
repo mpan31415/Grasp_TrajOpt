@@ -281,6 +281,8 @@ class GazeboPlanner:
 
         self.grasp_pose = None
 
+        self.trajectories = {}
+
 
     ########################## LISTENER FUNCTION ###################### 
     def run(self):
@@ -393,7 +395,7 @@ class GazeboPlanner:
 
         else:
 
-            object_choice = input("Enter the beer number to go for [1 - 3]: ")
+            # object_choice = input("Enter the beer number to go for [1 - 3]: ")
             # object_choice = 3
             # dx = input("Enter dx: ")
             # dz = input("Enter dz: ")
@@ -409,18 +411,27 @@ class GazeboPlanner:
 
             (dx, dz) = hand_param2(s, theta)
 
-            self.plan(int(object_choice), dx, dz, theta, yaw)
+            # self.plan(int(object_choice), dx, dz, theta, yaw)
             # plan(int(object_choice), 0.02, 0.07, 0, 0)
+
+            for index in range(1, 4):
+                self.plan(int(index), dx, dz, theta, yaw)
+
+            wait = input("1 to continue, 0 to exit ")
+            if wait == 1:
+                for key in self.trajectories:
+                    info = self.trajectories[key]
+                    print("object %d: cost of trajectory is %.3f!\n" % (key, info[1]))
                 
             rospy.signal_shutdown("hello")
 
 
 
     ################################# ARM TUCK FUNCTION #################################
-    def plan(self, obj_choice, dx, dz, theta, yaw):
+    def plan(self, obj_index, dx, dz, theta, yaw):
 
         rospy.loginfo("=" * 100)
-        rospy.loginfo("Running RRTConnect to plan trajectory towards object %d ... " % obj_choice)
+        rospy.loginfo("Running RRTConnect to plan trajectory towards object %d ... " % obj_index)
         rospy.loginfo("=" * 100)
 
         move_group = moveit_commander.MoveGroupCommander("arm")
@@ -438,20 +449,20 @@ class GazeboPlanner:
 
 
         #################### PLAN TOWARDS THE CHOSEN BEER POSE ####################
-        rospy.loginfo("incoming request: beer object %d's pose: " % obj_choice)
-        if obj_choice == 1:
+        rospy.loginfo("incoming request: beer object %d's pose: " % obj_index)
+        if obj_index == 1:
             # print(self.beer1_pose)
             self.grasp_pose = self.beer1_pose
-        if obj_choice == 2:
+        if obj_index == 2:
             # print(self.beer2_pose)
             self.grasp_pose = self.beer2_pose
-        if obj_choice == 3:
+        if obj_index == 3:
             # print(self.beer3_pose)
             self.grasp_pose = self.beer3_pose
 
 
         self.grasp_pose.position.x += CONST_X
-        # self.grasp_pose.position.z += (OFFSET / 2)
+        self.grasp_pose.position.z += (OFFSET / 2)
         # self.grasp_pose.position.z += dz
 
         # dx_for_fetch = dx * math.cos(yaw)
@@ -476,14 +487,19 @@ class GazeboPlanner:
         moveit_traj = plan[1]
         joint_trajectory = moveit_traj.joint_trajectory
 
-        choice = input("RRTConnect has finished! Would you like to calculate the trajectory length [1 for YES / 0 for NO]: ")
-        # choice = 0
+        # choice = input("RRTConnect has finished! Would you like to calculate the trajectory length [1 for YES / 0 for NO]: ")
+        choice = 1
+        printing = False
         if int(choice) == 1:
             (length, vel_cost, accel_cost, jerk_cost, total_cost) = get_costs(joint_trajectory)
-            print("+" * 100)
-            print("The total cost of the trajectory is %.3f as calculated by the get_costs() function" % total_cost)
-            print("+" * 100)
-            print("\n")
+            if printing:
+                print("+" * 100)
+                print("The total cost of the trajectory is %.3f as calculated by the get_costs() function" % total_cost)
+                print("+" * 100)
+                print("\n")
+
+        # add the (trajectory, cost) tuple to the dictionary of trajectories
+        self.trajectories[obj_index] = (joint_trajectory, total_cost)
             
         # time.sleep(1)
         move_group.clear_pose_targets()
@@ -498,7 +514,7 @@ class GazeboPlanner:
 ########################## MAIN FUNCTION ###################### 
 if __name__ == '__main__':
     
-    michael = GazeboPlanner()
+    planner = GazeboPlanner()
 
-    michael.run()
+    planner.run()
     

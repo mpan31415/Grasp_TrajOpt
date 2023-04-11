@@ -1,0 +1,14 @@
+##############################################################################################################
+############################################# TO RUN EXPERIMENTS #############################################
+
+1. launch Gazebo scene
+    - roslaunch loading_test gazebo_sim.launch
+
+2. launch move_group (set this to launch rviz as well)
+    - roslaunch fetch_moveit_config move_group.launch
+
+3. launch rviz
+    - rosrun rviz rviz -d "fetch.rviz"
+
+4. run your python script
+    - python [script].py
