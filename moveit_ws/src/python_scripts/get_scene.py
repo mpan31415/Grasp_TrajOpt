@@ -8,6 +8,7 @@ import os
 import csv
 from datetime import datetime
 import random
+import sys
 
 import tf
 from tf2_msgs.msg import TFMessage
@@ -270,8 +271,10 @@ class GazeboPlanner:
 
         self.end_effector = "gripper_link"
         self.planner_id = "RRTstarkConfigDefault"
-        self.planning_time = 20
+        self.planning_time = 5
         self.vel_factor = 0.1
+        
+        self.logging = False
 
         self.planning_scene = PlanningSceneInterface("base_link")
 
@@ -306,7 +309,8 @@ class GazeboPlanner:
 
             collision_objects = self.planning_scene.getKnownCollisionObjects()
             # collision_objects = self.planning_scene.get_known_object_names()
-            rospy.loginfo(" -> Collision objects in current Gazebo scene: %s " % collision_objects)
+            if self.logging:
+                rospy.loginfo(" -> Collision objects in current Gazebo scene: %s " % collision_objects)
 
             # self.planning_scene.clear()
 
@@ -321,8 +325,9 @@ class GazeboPlanner:
                     robot_pos = [(data.pose)[i].position.x,(data.pose)[i].position.y,(data.pose)[i].position.z]
                     robot_quart = [(data.pose)[i].orientation.x,(data.pose)[i].orientation.y,(data.pose)[i].orientation.z,(data.pose)[i].orientation.w]
                     robot_euler = euler_from_quaternion(robot_quart)
-                    rospy.loginfo("Robot Position: "+str(robot_pos))
-                    rospy.loginfo("Robot Euler: "+str(robot_euler))
+                    if self.logging:
+                        rospy.loginfo("Robot Position: "+str(robot_pos))
+                        rospy.loginfo("Robot Euler: "+str(robot_euler))
             
             robot_x = robot_pos[0]
             robot_y = robot_pos[1]
@@ -331,7 +336,8 @@ class GazeboPlanner:
 
             for index in range(list_len):
 
-                rospy.loginfo(" -> The %s has position (%.3f, %.3f, %.3f)", 
+                if self.logging:
+                    rospy.loginfo(" -> The %s has position (%.3f, %.3f, %.3f)", 
                         (data.name)[index], (data.pose)[index].position.x, (data.pose)[index].position.y, (data.pose)[index].position.z)
 
                 if self.beer1_name in (data.name)[index]:
@@ -412,30 +418,44 @@ class GazeboPlanner:
             s = 0.07
             theta = 0
             yaw = 0.0
-            rospy.loginfo("The input parameters are (%.3f, %.3f)" % (s, theta))
+            if self.logging:
+                rospy.loginfo("The input parameters are (%.3f, %.3f)" % (s, theta))
 
             (dx, dz) = hand_param2(s, theta)
 
             # self.plan(int(object_choice), dx, dz, theta, yaw)
             # plan(int(object_choice), 0.02, 0.07, 0, 0)
 
-            for index in range(2, 4):
+            for index in range(1, 4):
                 self.plan(int(index), dx, dz, theta, yaw)
 
             wait = input("1 to publish trajectories to topic, 0 to exit ")
             if wait == 1:
-                trajectory_pub = rospy.Publisher('rrt_trajectories', String, queue_size=10)
+                trajectory_pub = rospy.Publisher('rrt_trajectories', _OmplResponse, queue_size=10, latch=True)
                 rate = rospy.Rate(1) # 1 Hz
                 while not rospy.is_shutdown():
-                    for key in self.trajectories:
-                        info = self.trajectories[key]
-                        info_string = "object %d: cost of trajectory is %.3f!\n" % (key, info[1])
-                        rospy.loginfo("info string = %s" % info_string)
-                        trajectory_pub.publish(info_string)
-                        rate.sleep()
+                    min_cost = sys.maxsize
+                    best_object = 0
+                    for obj_key in self.trajectories:
+                        info = self.trajectories[obj_key]
+                        if info[1] < min_cost:
+                            min_cost = info[1]
+                            best_object = obj_key
+                    rospy.loginfo("The best object is #%d, with a trajectory cost of %.3f" % (best_object, min_cost))
+                    best_trajectory = self.trajectories[best_object]
+                    response = _OmplResponse()
+                    response.object_index = best_object
+                    response.init_pose = best_trajectory.points[0].positions
+                    response.trajectory = best_trajectory
+                    response.num_waypoints = len(best_trajectory.points)
+                    response.cost = min_cost
+
+                    rospy.loginfo("Publishing message now!")
+                    trajectory_pub.publish(response)
+                    rate.sleep()
                     rospy.signal_shutdown("goodbye")
             else:
-                print("not publishing trajectories, shutting down now ... ")
+                rospy.logerr("not publishing trajectories, shutting down now ... ")
                 rospy.signal_shutdown("goodbye")
 
 
@@ -462,7 +482,7 @@ class GazeboPlanner:
 
 
         #################### PLAN TOWARDS THE CHOSEN BEER POSE ####################
-        rospy.loginfo("incoming request: beer object %d's pose: " % obj_index)
+        # rospy.loginfo("incoming request: beer object %d's pose: " % obj_index)
         if obj_index == 1:
             # print(self.beer1_pose)
             self.grasp_pose = self.beer1_pose
@@ -492,20 +512,23 @@ class GazeboPlanner:
         # self.grasp_pose.orientation.z = grasp_quat[2]
         # self.grasp_pose.orientation.w = grasp_quat[3]
 
-        rospy.loginfo("The grasp pose position is \n%s " % self.grasp_pose.position)
-        rospy.loginfo("The grasp pose orientation is \n%s " % self.grasp_pose.orientation)
+        if self.logging:
+            rospy.loginfo("The grasp pose position is \n%s " % self.grasp_pose.position)
+            rospy.loginfo("The grasp pose orientation is \n%s " % self.grasp_pose.orientation)
 
         plan = move_group.plan(self.grasp_pose)
 
         moveit_traj = plan[1]
         joint_trajectory = moveit_traj.joint_trajectory
 
+        if joint_trajectory is not None:
+            rospy.loginfo("Plan was successful!!!\n\n")
+
         # choice = input("RRTConnect has finished! Would you like to calculate the trajectory length [1 for YES / 0 for NO]: ")
         choice = 1
-        printing = False
         if int(choice) == 1:
             (length, vel_cost, accel_cost, jerk_cost, total_cost) = get_costs(joint_trajectory)
-            if printing:
+            if self.logging:
                 print("+" * 100)
                 print("The total cost of the trajectory is %.3f as calculated by the get_costs() function" % total_cost)
                 print("+" * 100)
