@@ -28,8 +28,8 @@ from control_msgs.msg import (FollowJointTrajectoryAction,
 from shape_msgs.msg import SolidPrimitive
 from std_msgs.msg import String
 
-from michael_msgs.msg import _OmplRequest, _OmplResponse
-from michael_msgs.srv import _GetOmplResults
+from michael_msgs.msg import OmplRequest, OmplResponse
+from michael_msgs.srv import GetOmplResults
 
 import moveit_commander
 
@@ -290,6 +290,7 @@ class GazeboPlanner:
         self.grasp_pose = None
 
         self.trajectories = {}
+        self.response = None
 
 
     ########################## LISTENER FUNCTION ###################### 
@@ -431,29 +432,36 @@ class GazeboPlanner:
 
             wait = input("1 to publish trajectories to topic, 0 to exit ")
             if wait == 1:
-                trajectory_pub = rospy.Publisher('rrt_trajectories', _OmplResponse, queue_size=10, latch=True)
+                trajectory_pub = rospy.Publisher('rrt_trajectories', OmplResponse, queue_size=10, latch=True)
                 rate = rospy.Rate(1) # 1 Hz
-                while not rospy.is_shutdown():
-                    min_cost = sys.maxsize
-                    best_object = 0
-                    for obj_key in self.trajectories:
-                        info = self.trajectories[obj_key]
-                        if info[1] < min_cost:
-                            min_cost = info[1]
-                            best_object = obj_key
-                    rospy.loginfo("The best object is #%d, with a trajectory cost of %.3f" % (best_object, min_cost))
-                    best_trajectory = self.trajectories[best_object]
-                    response = _OmplResponse()
-                    response.object_index = best_object
-                    response.init_pose = best_trajectory.points[0].positions
-                    response.trajectory = best_trajectory
-                    response.num_waypoints = len(best_trajectory.points)
-                    response.cost = min_cost
 
-                    rospy.loginfo("Publishing message now!")
-                    trajectory_pub.publish(response)
-                    rate.sleep()
-                    rospy.signal_shutdown("goodbye")
+                while not rospy.is_shutdown():
+
+                    if self.response is None:
+                        min_cost = sys.maxsize
+                        best_object = 0
+                        for obj_key in self.trajectories:
+                            info = self.trajectories[obj_key]
+                            if info[1] > 0 and info[1] < min_cost:
+                                min_cost = info[1]
+                                best_object = obj_key
+                        rospy.loginfo("The best object is #%d, with a trajectory cost of %.3f" % (best_object, min_cost))
+                        best_trajectory = self.trajectories[best_object][0]
+                        response = OmplResponse()
+                        response.object_index = best_object
+                        response.init_pose = best_trajectory.points[0]
+                        response.trajectory = best_trajectory
+                        response.num_waypoints = len(best_trajectory.points)
+                        response.cost = min_cost
+
+                        # Assign response class variable
+                        self.response = response
+                    
+                    else:
+                        rospy.loginfo("Now have self.response, publishing message now!\n")
+                        trajectory_pub.publish(self.response)
+                        rate.sleep()
+                        rospy.signal_shutdown("goodbye")
             else:
                 rospy.logerr("not publishing trajectories, shutting down now ... ")
                 rospy.signal_shutdown("goodbye")
@@ -521,9 +529,6 @@ class GazeboPlanner:
         moveit_traj = plan[1]
         joint_trajectory = moveit_traj.joint_trajectory
 
-        if joint_trajectory is not None:
-            rospy.loginfo("Plan was successful!!!\n\n")
-
         # choice = input("RRTConnect has finished! Would you like to calculate the trajectory length [1 for YES / 0 for NO]: ")
         choice = 1
         if int(choice) == 1:
@@ -533,6 +538,9 @@ class GazeboPlanner:
                 print("The total cost of the trajectory is %.3f as calculated by the get_costs() function" % total_cost)
                 print("+" * 100)
                 print("\n")
+
+        if joint_trajectory is not None:
+            rospy.loginfo("Plan was successful!!! Cost = %.3f\n\n" % total_cost)
 
         # add the (trajectory, cost) tuple to the dictionary of trajectories
         self.trajectories[obj_index] = (joint_trajectory, total_cost)
