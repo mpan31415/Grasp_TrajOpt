@@ -1,0 +1,1 @@
+uint8 object_index

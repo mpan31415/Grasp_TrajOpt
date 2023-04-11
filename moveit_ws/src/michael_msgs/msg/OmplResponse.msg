@@ -1,0 +1,2 @@
+float64 cost
+trajectory_msgs/JointTrajectory trajectory
