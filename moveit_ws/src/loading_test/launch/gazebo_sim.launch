@@ -14,14 +14,22 @@
     <arg name="paused" value="true"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="headless" value="$(arg headless)"/>
-    <!-- <arg name="world_name" value="$(find loading_test)/models/table/model.sdf"/> -->
-    <arg name="world_name" value="$(find loading_test)/world/bench.sdf"/>
+
+    <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/single_row_far3.sdf"/> -->
+    <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/single_row_close3.sdf"/> -->
+    <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/diagonal_very_far3.sdf"/> -->
+    <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/triangle_very_far3.sdf"/> -->
+
+    <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/single_row_far5.sdf"/> -->
+    <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/two_pairs5.sdf"/> -->
+    <arg name="world_name" value="$(find loading_test)/world/new_scenes/back_row5.sdf"/>
+
   </include>
 
   <!-- Oh, you wanted a robot? -->
   <include file="$(find loading_test)/launch/include/$(arg robot).launch.xml">
     <arg name="x" value="0.55"/>
-    <arg name="y" value="1.0"/>
+    <arg name="y" value="1.1"/>
     <arg name="yaw" value="-1.5708"/>
   </include>
 

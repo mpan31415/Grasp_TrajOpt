@@ -267,11 +267,13 @@ class GazeboPlanner:
         self.beer1_name = "beer1"
         self.beer2_name = "beer2"
         self.beer3_name = "beer3"
+        self.beer4_name = "beer4"
+        self.beer5_name = "beer5"
         self.fetch_name = "fetch"
 
         self.end_effector = "gripper_link"
         self.planner_id = "RRTstarkConfigDefault"
-        self.planning_time = 5
+        self.planning_time = 1
         self.vel_factor = 0.1
         
         self.logging = False
@@ -286,6 +288,9 @@ class GazeboPlanner:
         self.beer1_pose = None
         self.beer2_pose = None
         self.beer3_pose = None
+        self.beer4_pose = None
+        self.beer5_pose = None
+        self.num_beers = 5
 
         self.grasp_pose = None
 
@@ -381,6 +386,32 @@ class GazeboPlanner:
                     # self.planning_scene.removeCollisionObject((data.name)[index])
                     self.planning_scene.addCylinder((data.name)[index], HEIGHT, RADIUS, beer_rel_x, beer_rel_y, (data.pose)[index].position.z + OFFSET)
 
+                if self.beer4_name in (data.name)[index]:
+                    beer_world_x = (data.pose)[index].position.x
+                    beer_world_y = (data.pose)[index].position.y
+
+                    beer_rel_x = (beer_world_x - robot_x) * math.cos(-robot_yaw) - (beer_world_y - robot_y) * math.sin(-robot_yaw)
+                    beer_rel_y = (beer_world_x - robot_x) * math.sin(-robot_yaw) + (beer_world_y - robot_y) * math.cos(-robot_yaw)
+
+                    beer_quart = (data.pose)[index].orientation
+                    self.beer4_pose = Pose(Point(beer_rel_x, beer_rel_y, (data.pose)[index].position.z + OFFSET), beer_quart)
+
+                    # self.planning_scene.removeCollisionObject((data.name)[index])
+                    self.planning_scene.addCylinder((data.name)[index], HEIGHT, RADIUS, beer_rel_x, beer_rel_y, (data.pose)[index].position.z + OFFSET)
+
+                if self.beer5_name in (data.name)[index]:
+                    beer_world_x = (data.pose)[index].position.x
+                    beer_world_y = (data.pose)[index].position.y
+
+                    beer_rel_x = (beer_world_x - robot_x) * math.cos(-robot_yaw) - (beer_world_y - robot_y) * math.sin(-robot_yaw)
+                    beer_rel_y = (beer_world_x - robot_x) * math.sin(-robot_yaw) + (beer_world_y - robot_y) * math.cos(-robot_yaw)
+
+                    beer_quart = (data.pose)[index].orientation
+                    self.beer5_pose = Pose(Point(beer_rel_x, beer_rel_y, (data.pose)[index].position.z + OFFSET), beer_quart)
+
+                    # self.planning_scene.removeCollisionObject((data.name)[index])
+                    self.planning_scene.addCylinder((data.name)[index], HEIGHT, RADIUS, beer_rel_x, beer_rel_y, (data.pose)[index].position.z + OFFSET)
+
 
                 elif self.bench_name in (data.name)[index]:
                     # self.planning_scene.removeCollisionObject((data.name)[index])
@@ -427,8 +458,12 @@ class GazeboPlanner:
             # self.plan(int(object_choice), dx, dz, theta, yaw)
             # plan(int(object_choice), 0.02, 0.07, 0, 0)
 
-            for index in range(1, 4):
+            tic = time.time()
+            for index in range(1, self.num_beers + 1):
                 self.plan(int(index), dx, dz, theta, yaw)
+            toc = time.time()
+            elapsed = toc - tic
+            print("planning all trajectories took %.5f seconds!\n" % elapsed)
 
             wait = input("1 to publish trajectories to topic, 0 to exit ")
             if wait == 1:
@@ -500,6 +535,12 @@ class GazeboPlanner:
         if obj_index == 3:
             # print(self.beer3_pose)
             self.grasp_pose = self.beer3_pose
+        if obj_index == 4:
+            # print(self.beer3_pose)
+            self.grasp_pose = self.beer4_pose
+        if obj_index == 5:
+            # print(self.beer3_pose)
+            self.grasp_pose = self.beer5_pose
 
 
         self.grasp_pose.position.x += CONST_X
