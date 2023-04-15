@@ -1,0 +1,6 @@
+<launch>
+
+  <node name="amr_control" pkg="cpp_files" type="amr_control" respawn="false" output="screen">
+  </node>
+
+</launch>
