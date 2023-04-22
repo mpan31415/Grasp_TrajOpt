@@ -290,7 +290,7 @@ class GazeboPlanner:
         self.beer3_pose = None
         self.beer4_pose = None
         self.beer5_pose = None
-        self.num_beers = 5
+        self.num_beers = 0
 
         self.grasp_pose = None
 
@@ -347,6 +347,7 @@ class GazeboPlanner:
                         (data.name)[index], (data.pose)[index].position.x, (data.pose)[index].position.y, (data.pose)[index].position.z)
 
                 if self.beer1_name in (data.name)[index]:
+                    self.num_beers += 1
                     beer_world_x = (data.pose)[index].position.x
                     beer_world_y = (data.pose)[index].position.y
 
@@ -361,6 +362,7 @@ class GazeboPlanner:
                     # self.planning_scene.add_box((data.name)[index], beer_pose)
                 
                 if self.beer2_name in (data.name)[index]:
+                    self.num_beers += 1
                     beer_world_x = (data.pose)[index].position.x
                     beer_world_y = (data.pose)[index].position.y
 
@@ -374,6 +376,7 @@ class GazeboPlanner:
                     self.planning_scene.addCylinder((data.name)[index], HEIGHT, RADIUS, beer_rel_x, beer_rel_y, (data.pose)[index].position.z + OFFSET)
                 
                 if self.beer3_name in (data.name)[index]:
+                    self.num_beers += 1
                     beer_world_x = (data.pose)[index].position.x
                     beer_world_y = (data.pose)[index].position.y
 
@@ -387,6 +390,7 @@ class GazeboPlanner:
                     self.planning_scene.addCylinder((data.name)[index], HEIGHT, RADIUS, beer_rel_x, beer_rel_y, (data.pose)[index].position.z + OFFSET)
 
                 if self.beer4_name in (data.name)[index]:
+                    self.num_beers += 1
                     beer_world_x = (data.pose)[index].position.x
                     beer_world_y = (data.pose)[index].position.y
 
@@ -400,6 +404,7 @@ class GazeboPlanner:
                     self.planning_scene.addCylinder((data.name)[index], HEIGHT, RADIUS, beer_rel_x, beer_rel_y, (data.pose)[index].position.z + OFFSET)
 
                 if self.beer5_name in (data.name)[index]:
+                    self.num_beers += 1
                     beer_world_x = (data.pose)[index].position.x
                     beer_world_y = (data.pose)[index].position.y
 
