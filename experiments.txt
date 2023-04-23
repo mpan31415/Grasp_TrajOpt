@@ -52,3 +52,6 @@ NOTE: The moveit_ws build on the laptop is by it itself in /home/michael/
 2. traj
 3. mv
 
+### adjust trajopt rviz -> fetch_simulation.launch, arg rviz = False
+### adjust waiting for plotting trajopt -> bayesian_client.py, TrajOptRunner() callback() & baseline(), plotting = False
+### adjust MoveIt rviz -> move_group.launch, comment-out <include moveit_rviz.launch>
