@@ -280,7 +280,7 @@ class GazeboPlanner:
 
         self.planning_scene = PlanningSceneInterface("base_link")
 
-        self.bench_dir = "../models/shelf_parts/shelf_2.STL"
+        self.bench_dir = "../../models/shelf_parts/shelf_2.STL"
 
         self.got_scene = False
 
