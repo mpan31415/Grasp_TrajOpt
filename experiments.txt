@@ -1,14 +1,43 @@
 ##############################################################################################################
-############################################# TO RUN EXPERIMENTS #############################################
+#####################   MAKE SURE TO REMEMBER TO SOURCE THE WORKSPACES CORRESPONDINGLY   #####################
 
-1. launch Gazebo scene
+#########################################################################
+##############  FOR RUNNING RRT ON PC + TRAJOPT ON LAPTOP  ##############
+
+1. change ROS_MASTER_URI on the laptop to be the same as PC (done by uncommenting in .bashrc [LAPTOP])
+    - export ROS_MASTER_URI=http://172.20.10.3:11311
+
+2. launch Gazebo scene [PC]
     - roslaunch loading_test gazebo_sim.launch
 
-2. launch move_group (set this to launch rviz as well)
+3. launch move_group (which is set to launch rviz too) [PC] -> prepare RRT solver
     - roslaunch fetch_moveit_config move_group.launch
 
-3. launch rviz
-    - rosrun rviz rviz -d "fetch.rviz"
+4. launch trajopt node (fetch_ros_sim_node.cpp + fetch_simulation.cpp) [LAPTOP] -> prepare TrajOpt solver
+    - fe (roslaunch tesseract_ros_examples fetch_simulation.launch)
 
-4. run your python script
+5. launch bayesian client node (bayesian_client.py) [LAPTOP] -> prepare OmplResponse subscriber
+    - ba (rosrun tesseract_ros_examples bayesian_client.py)
+
+6. run Python node [PC] -> run RRT solver
+    - python [script].py
+
+
+
+########################################################################
+##############  FOR RUNNING RRT + TRAJOPT BOTH ON LAPTOP  ##############
+
+1. launch Gazebo scene [LAPTOP]
+    - roslaunch loading_test gazebo_sim.launch
+
+2. launch move_group (which is set to launch rviz too) [LAPTOP]
+    - roslaunch fetch_moveit_config move_group.launch
+
+3. launch trajopt node (fetch_ros_sim_node.cpp + fetch_simulation.cpp) [LAPTOP] -> prepare TrajOpt solver
+    - fe (roslaunch tesseract_ros_examples fetch_simulation.launch)
+
+4. launch bayesian client node (bayesian_client.py) [LAPTOP] -> prepare OmplResponse subscriber
+    - ba (rosrun tesseract_ros_examples bayesian_client.py)
+
+5. run Python node [PC] -> run RRT solver
     - python [script].py
