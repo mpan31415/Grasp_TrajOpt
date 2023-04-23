@@ -23,9 +23,11 @@
     - python [script].py
 
 
-
 ########################################################################
 ##############  FOR RUNNING RRT + TRAJOPT BOTH ON LAPTOP  ##############
+
+NOTE: The moveit_ws build on the laptop is by it itself in /home/michael/ 
+    -> The version inside MonashRA repository is the same, EXCEPT for the .sdf files for the Gazebo scenes
 
 1. launch Gazebo scene [LAPTOP]
     - roslaunch loading_test gazebo_sim.launch
@@ -41,3 +43,12 @@
 
 5. run Python node [PC] -> run RRT solver
     - python [script].py
+
+
+###################################################################### 
+######################### USING LAUNCH FILES #########################
+
+1. ga
+2. traj
+3. mv
+
