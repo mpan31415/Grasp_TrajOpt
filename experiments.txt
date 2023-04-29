@@ -4,22 +4,26 @@
 #########################################################################
 ##############  FOR RUNNING RRT ON PC + TRAJOPT ON LAPTOP  ##############
 
-1. change ROS_MASTER_URI on the laptop to be the same as PC (done by uncommenting in .bashrc [LAPTOP])
-    - export ROS_MASTER_URI=http://172.20.10.3:11311
+1. export the ROS_IP on the PC to 172.20.10.3
+    - export ROS_IP=172.20.10.3
 
-2. launch Gazebo scene [PC]
+2. change ROS_MASTER_URI on the laptop to be the same as PC (done by uncommenting in .bashrc [LAPTOP]), and ROS_IP to be same as "hostname -I"
+    - export ROS_MASTER_URI=http://172.20.10.3:11311
+    - export ROS_IP=172.20.10.6
+
+3. launch Gazebo scene [PC]
     - roslaunch loading_test gazebo_sim.launch
 
-3. launch move_group (which is set to launch rviz too) [PC] -> prepare RRT solver
+4. launch move_group (which is set to launch rviz too) [PC] -> prepare RRT solver
     - roslaunch fetch_moveit_config move_group.launch
 
-4. launch trajopt node (fetch_ros_sim_node.cpp + fetch_simulation.cpp) [LAPTOP] -> prepare TrajOpt solver
+5. launch trajopt node (fetch_ros_sim_node.cpp + fetch_simulation.cpp) [LAPTOP] -> prepare TrajOpt solver
     - fe (roslaunch tesseract_ros_examples fetch_simulation.launch)
 
-5. launch bayesian client node (bayesian_client.py) [LAPTOP] -> prepare OmplResponse subscriber
+6. launch bayesian client node (bayesian_client.py) [LAPTOP] -> prepare OmplResponse subscriber
     - ba (rosrun tesseract_ros_examples bayesian_client.py)
 
-6. run Python node [PC] -> run RRT solver
+7. run Python node [PC] -> run RRT solver
     - python [script].py
 
 
