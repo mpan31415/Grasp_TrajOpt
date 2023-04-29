@@ -502,7 +502,7 @@ class GazeboPlanner:
                     # rospy.loginfo("%s" % self.response)
                     trajectory_pub.publish(self.response)
                     rate.sleep()
-                    # rospy.signal_shutdown("goodbye")
+                    rospy.signal_shutdown("goodbye")
 
 
     ################################# ARM TUCK FUNCTION #################################
