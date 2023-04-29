@@ -3,3 +3,4 @@ trajectory_msgs/JointTrajectoryPoint init_pose
 trajectory_msgs/JointTrajectory trajectory
 uint8 num_waypoints
 float64 cost
+float64 planning_time

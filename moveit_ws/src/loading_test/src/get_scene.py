@@ -281,7 +281,7 @@ class GazeboPlanner:
         self.planning_scene = PlanningSceneInterface("base_link")
 
         # self.bench_dir = "../../models/shelf_parts/shelf_2.STL"
-        self.bench_dir = os.path.expanduser('~') + "MonashRA/moveit_ws/src/models/shelf_parts/shelf_2.STL"
+        self.bench_dir = os.path.expanduser('~') + "/MonashRA/moveit_ws/src/models/shelf_parts/shelf_2.STL"
 
         self.got_scene = False
 
@@ -469,10 +469,10 @@ class GazeboPlanner:
                 self.plan(int(index), dx, dz, theta, yaw)
             toc = time.time()
             elapsed = toc - tic
-            print("planning all trajectories took %.5f seconds!\n" % elapsed)
+            rospy.logerr("planning all trajectories took %.5f seconds!\n" % elapsed)
 
             trajectory_pub = rospy.Publisher('rrt_trajectories', OmplResponse, queue_size=10, latch=True)
-            rate = rospy.Rate(1) # 1 Hz
+            rate = rospy.Rate(0.5) # 0.5 Hz
 
             while not rospy.is_shutdown():
 
@@ -484,7 +484,7 @@ class GazeboPlanner:
                         if info[1] > 0 and info[1] < min_cost:
                             min_cost = info[1]
                             best_object = obj_key
-                    rospy.loginfo("The best object is #%d, with a trajectory cost of %.3f" % (best_object, min_cost))
+                    rospy.logerr("The best object is #%d, with a trajectory cost of %.3f" % (best_object, min_cost))
                     best_trajectory = self.trajectories[best_object][0]
                     response = OmplResponse()
                     response.object_index = best_object
@@ -492,15 +492,17 @@ class GazeboPlanner:
                     response.trajectory = best_trajectory
                     response.num_waypoints = len(best_trajectory.points)
                     response.cost = min_cost
+                    response.planning_time = elapsed
 
                     # Assign response class variable
                     self.response = response
                 
                 else:
                     rospy.loginfo("Now have self.response, publishing message now!\n")
+                    # rospy.loginfo("%s" % self.response)
                     trajectory_pub.publish(self.response)
                     rate.sleep()
-                    rospy.signal_shutdown("goodbye")
+                    # rospy.signal_shutdown("goodbye")
 
 
     ################################# ARM TUCK FUNCTION #################################
