@@ -18,7 +18,7 @@
     <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/single_row_far3.sdf"/> -->
     <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/single_row_close3.sdf"/> -->
     <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/diagonal_very_far3.sdf"/> -->
-    <arg name="world_name" value="$(find loading_test)/world/new_scenes/triangle_very_far3.sdf"/>
+    <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/triangle_very_far3.sdf"/> -->
 
     <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/single_row_far5.sdf"/> -->
     <!-- <arg name="world_name" value="$(find loading_test)/world/new_scenes/two_pairs5.sdf"/> -->

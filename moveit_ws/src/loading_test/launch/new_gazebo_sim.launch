@@ -1,0 +1,35 @@
+<launch>
+
+  <env name="GAZEBO_MODEL_PATH" value="$(find fetch_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)" />
+
+  <arg name="robot" default="fetch"/>
+  <arg name="debug" default="false"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+
+  <!-- Start Gazebo with a blank world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="true"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="headless" value="$(arg headless)"/>
+
+
+    <!-- <arg name="world_name" value="$(find loading_test)/world/srp_scenes/box_occluded.sdf"/> -->
+    <!-- <arg name="world_name" value="$(find loading_test)/world/srp_scenes/easier_box_occluded.sdf"/> -->
+    <!-- <arg name="world_name" value="$(find loading_test)/world/srp_scenes/real_real_shelf.sdf"/> -->
+    <!-- <arg name="world_name" value="$(find loading_test)/world/srp_scenes/single_row_tilted.sdf"/> -->
+    <arg name="world_name" value="$(find loading_test)/world/srp_scenes/single_row.sdf"/>
+
+
+  </include>
+
+  <!-- Oh, you wanted a robot? -->
+  <include file="$(find loading_test)/launch/include/$(arg robot).launch.xml">
+    <arg name="x" value="1.1"/>
+    <arg name="y" value="0.6"/>
+    <arg name="yaw" value="-3.1416"/>
+  </include>
+
+</launch>
